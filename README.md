@@ -48,6 +48,11 @@ powershell -File build.ps1           # crea dist\Cleaner (circa 5 GB con il mode
 
 Dettagli tecnici in `CLAUDE.md`.
 
+## Licenza
+
+Win-Cleaner è distribuito con licenza [Apache-2.0](LICENSE). Crediti e componenti di terze parti in
+[NOTICE](NOTICE).
+
 ## Crediti e licenze di terze parti
 
 - [Rizzo Flow](https://github.com/Rizzo-AI-Academy/rizzo-flow), di Simone Rizzo — Rizzo AI Academy,

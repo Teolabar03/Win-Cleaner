@@ -1,0 +1,12 @@
+Win-Cleaner
+Copyright 2026 Matteo La Barbera
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Win-Cleaner uses Rizzo Flow (https://github.com/Rizzo-AI-Academy/rizzo-flow),
+Copyright 2026 Simone Rizzo — Rizzo AI Academy, licensed under the Apache License, Version 2.0.
+Win-Cleaner is an independent project and is not affiliated with Rizzo AI Academy.
+
+The portable build also bundles, without modification, third-party components that keep their
+own licenses: the Spark-X2.5-4B model weights by XHToken (Apache-2.0), llama.cpp and ggml
+prebuilt binaries (MIT), and NVIDIA CUDA runtime libraries (NVIDIA license).

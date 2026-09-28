@@ -3,6 +3,9 @@ name = "win-cleaner"
 version = "0.1.0"
 description = "Pulizia del disco guidata: mappa il disco, classifica con Rizzo Flow, elimina solo cio' che scegli"
 requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Matteo La Barbera" }]
 dependencies = [
   "rizzo-flow",
   "pywebview>=5.3",

@@ -38,5 +38,6 @@ Sicurezza
   - Ogni pulizia viene registrata nella cartella "registri" accanto a Cleaner.exe.
 
 Licenze
+  Win-Cleaner: Apache-2.0 (vedi LICENSE.txt e NOTICE.txt).
   Rizzo Flow e Spark-X2.5: Apache-2.0 (vedi ai\LICENSE-rizzo-flow.txt e
   ai\NOTICE-rizzo-flow.txt). llama.cpp: MIT. Le librerie CUDA sono di NVIDIA.

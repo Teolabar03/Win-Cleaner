@@ -40,6 +40,8 @@ Get-ChildItem (Join-Path $rizzo "runtimes") -Directory -Filter "llama-*" | ForEa
 Copy-Item (Join-Path $rizzo "LICENSE") (Join-Path $ai "LICENSE-rizzo-flow.txt") -Force
 Copy-Item (Join-Path $rizzo "NOTICE") (Join-Path $ai "NOTICE-rizzo-flow.txt") -Force
 Copy-Item (Join-Path $PSScriptRoot "LEGGIMI.txt") (Join-Path $dist "LEGGIMI.txt") -Force
+Copy-Item (Join-Path $PSScriptRoot "LICENSE") (Join-Path $dist "LICENSE.txt") -Force
+Copy-Item (Join-Path $PSScriptRoot "NOTICE") (Join-Path $dist "NOTICE.txt") -Force
 
 $size = (Get-ChildItem $dist -Recurse -File | Measure-Object Length -Sum).Sum / 1GB
 Write-Host ("Cartella portable pronta: {0} ({1:N1} GB)" -f $dist, $size)
