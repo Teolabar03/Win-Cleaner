@@ -1,0 +1,42 @@
+PULIZIA DISCO
+=============
+
+Avvio
+  Fai doppio clic su Cleaner.exe. Non serve installare nulla: la cartella si può copiare
+  su un altro PC o su una chiavetta, purché resti intera (Cleaner.exe, _internal, ai).
+
+Come funziona
+  1. Scegli il disco e premi "Analizza il disco": viene mappato per intero.
+  2. Un modello AI locale (Rizzo Flow con Spark-X2.5-4B, nella cartella "ai") classifica
+     le cartelle e i file più pesanti. Nessun dato esce dal computer.
+  3. Trovi pre-selezionato solo ciò che è chiaramente inutile (cache, file temporanei,
+     registri, pacchetti riscaricabili). Puoi cambiare ogni spunta. Fai clic su un percorso
+     per aprirlo in Esplora file.
+  4. "Pulisci" mostra un riepilogo e chiede due conferme. Di default gli elementi vanno
+     nel Cestino; l'eliminazione definitiva chiede di scrivere ELIMINA.
+
+Chiavette, dischi esterni e telefoni
+  - Chiavette e dischi esterni USB compaiono nell'elenco dei dischi. Le chiavette e le schede
+    di memoria non hanno un Cestino: lì l'eliminazione è sempre definitiva.
+  - Un telefono Android compare se lo colleghi con il cavo, lo sblocchi e scegli
+    "Trasferimento file" nella notifica USB, poi premi "Aggiorna elenco". La lettura è più
+    lenta di un disco e puoi interromperla quando vuoi. Sul telefono non esiste un Cestino.
+    Le cartelle delle app (Android/data e Android/obb) non si toccano, salvo le loro cache.
+  - Di un iPhone Windows mostra solo foto e video.
+
+Requisiti
+  - Windows 10 o 11 a 64 bit, con Microsoft Edge WebView2 (già presente in Windows 11).
+  - Scheda video NVIDIA con almeno 6 GB di memoria per la massima velocità. Con altre
+    schede video usa Vulkan, senza scheda video usa il processore (più lento). Se il
+    modello non si carica, il programma funziona lo stesso con le sole regole integrate.
+
+Sicurezza
+  - Windows, Programmi, ProgramData, i programmi installati per l'utente e le cartelle
+    personali (Desktop, Documenti, Download...) non si possono eliminare in blocco.
+  - Per un'analisi completa e per svuotare le cartelle temporanee di sistema avvia il
+    programma come amministratore (tasto destro > Esegui come amministratore).
+  - Ogni pulizia viene registrata nella cartella "registri" accanto a Cleaner.exe.
+
+Licenze
+  Rizzo Flow e Spark-X2.5: Apache-2.0 (vedi ai\LICENSE-rizzo-flow.txt e
+  ai\NOTICE-rizzo-flow.txt). llama.cpp: MIT. Le librerie CUDA sono di NVIDIA.

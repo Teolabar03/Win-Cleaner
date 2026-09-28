@@ -1,0 +1,7 @@
+.venv/
+build/
+dist/
+registri/
+__pycache__/
+.pytest_cache/
+*.spec.bak

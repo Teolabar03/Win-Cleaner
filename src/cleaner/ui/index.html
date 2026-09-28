@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pulizia disco</title>
+<link rel="stylesheet" href="style.css">
+<script>
+  // Theme before the first paint: the system setting, refined later from the registry.
+  if (matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.dataset.theme = "dark";
+</script>
+</head>
+<body>
+<div class="app">
+  <header class="titlebar">
+    <svg class="app-icon" viewBox="0 0 20 20" aria-hidden="true">
+      <defs><linearGradient id="ai-g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#4cc2ff"/><stop offset="1" stop-color="#0067c0"/></linearGradient></defs>
+      <rect x="1.5" y="3" width="17" height="14" rx="3" fill="url(#ai-g)"/>
+      <rect x="4" y="11.5" width="12" height="2.5" rx="1.25" fill="#fff" opacity=".9"/>
+      <circle cx="14.5" cy="7" r="1.4" fill="#fff"/>
+    </svg>
+    <span class="app-name">Pulizia disco</span>
+    <span class="spacer"></span>
+    <span class="chip loading" id="model-chip" title=""><span class="dot"></span><span id="model-text">Caricamento del modello AI…</span></span>
+  </header>
+
+  <main class="page" id="page">
+    <div class="page-inner">
+      <nav class="breadcrumb" id="breadcrumb" aria-label="Percorso"></nav>
+
+      <!-- 1. choose a drive -->
+      <section class="screen active" id="screen-home">
+        <div class="hero">
+          <div>
+            <h1>Fai spazio sul disco</h1>
+            <p>Scegli un disco: viene mappato per intero e un modello AI locale riconosce cosa sono le cartelle e i file più pesanti. Ti proponiamo cosa eliminare, ma decidi tu: niente viene cancellato senza la tua conferma.</p>
+            <div class="steps">
+              <div class="step"><span class="num">1</span>Mappatura del disco</div>
+              <div class="step"><span class="num">2</span>Classificazione con l'AI</div>
+              <div class="step"><span class="num">3</span>Scegli e conferma</div>
+            </div>
+          </div>
+          <svg class="hero-art" viewBox="0 0 190 150" aria-hidden="true">
+            <defs>
+              <linearGradient id="h1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6ccff6"/><stop offset="1" stop-color="#0067c0"/></linearGradient>
+              <linearGradient id="h2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c7a4ff"/><stop offset="1" stop-color="#6b46e5"/></linearGradient>
+              <linearGradient id="h3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset="1" stop-color="#e8eef7" stop-opacity=".9"/></linearGradient>
+            </defs>
+            <rect x="18" y="34" width="120" height="84" rx="10" fill="url(#h1)"/>
+            <rect x="30" y="94" width="96" height="10" rx="5" fill="#fff" opacity=".35"/>
+            <rect x="30" y="94" width="58" height="10" rx="5" fill="#fff" opacity=".95"/>
+            <circle cx="120" cy="52" r="5" fill="#fff" opacity=".9"/>
+            <rect x="92" y="18" width="82" height="62" rx="10" fill="url(#h3)" stroke="rgba(0,0,0,.06)"/>
+            <rect x="102" y="30" width="30" height="40" rx="3" fill="#3b82f6"/>
+            <rect x="134" y="30" width="30" height="18" rx="3" fill="#a78bfa"/>
+            <rect x="134" y="50" width="14" height="20" rx="3" fill="#14b8a6"/>
+            <rect x="150" y="50" width="14" height="20" rx="3" fill="#f59e0b"/>
+            <circle cx="150" cy="112" r="24" fill="url(#h2)"/>
+            <path d="M139 112l7 7 14-15" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="section-title">Dischi</div>
+        <div class="drives" id="drives"></div>
+        <div id="home-notes"></div>
+        <div class="actions">
+          <button class="btn accent large" id="btn-analyse" disabled><span class="icon">&#xE721;</span>Analizza il disco</button>
+          <button class="btn large" id="btn-refresh-drives"><span class="icon">&#xE72C;</span>Aggiorna elenco</button>
+        </div>
+      </section>
+
+      <!-- 2. analysis -->
+      <section class="screen" id="screen-analysis">
+        <div class="analysis">
+          <div class="card analysis-main">
+            <svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26"/></svg>
+            <div style="flex:1;min-width:0">
+              <h2 id="an-title">Mappatura del disco in corso</h2>
+              <div class="muted" id="an-sub">Sto leggendo cartelle e file. Su un disco pieno ci vuole circa un minuto.</div>
+            </div>
+            <button class="btn" id="btn-cancel" title="Ferma tutto e torna alla scelta del disco"><span class="icon">&#xE711;</span>Annulla analisi</button>
+          </div>
+          <div class="card">
+            <div class="stage running" id="stage-scan">
+              <span class="badge-num">1</span>
+              <div class="stage-body">
+                <div class="stage-title">Mappatura</div>
+                <div class="stage-sub" id="stage-scan-sub">Dimensione di ogni cartella</div>
+                <div class="stats">
+                  <div class="stat"><div class="value" id="st-files">0</div><div class="label">file</div></div>
+                  <div class="stat"><div class="value" id="st-folders">0</div><div class="label">cartelle</div></div>
+                  <div class="stat"><div class="value" id="st-bytes">0 GB</div><div class="label">letti</div></div>
+                </div>
+                <div class="progress indeterminate" id="pb-scan"><span></span></div>
+                <div class="current-path" id="st-path" style="margin-top:8px"></div>
+                <button class="btn stage-stop" id="btn-stop-scan" title="Usa solo la parte di disco già letta"><span class="icon">&#xE71A;</span>Interrompi mappatura</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="stage" id="stage-ai">
+              <span class="badge-num">2</span>
+              <div class="stage-body">
+                <div class="stage-title">Classificazione</div>
+                <div class="stage-sub" id="ai-sub">L'AI riconosce il tipo di dati di ogni elemento</div>
+                <div class="stats">
+                  <div class="stat"><div class="value" id="st-ai-done">–</div><div class="label">elementi analizzati</div></div>
+                  <div class="stat"><div class="value" id="st-ai-total">–</div><div class="label">in totale</div></div>
+                  <div class="stat"><div class="value" id="st-ai-eta">–</div><div class="label">tempo stimato</div></div>
+                </div>
+                <div class="progress" id="pb-ai"><span style="width:0"></span></div>
+                <div class="current-path" id="st-ai-path" style="margin-top:8px"></div>
+                <button class="btn stage-stop" id="btn-skip-ai" style="display:none" title="Mostra subito i risultati: gli elementi non ancora analizzati usano solo le regole"><span class="icon">&#xE71A;</span>Interrompi classificazione</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. results -->
+      <section class="screen" id="screen-results">
+        <div class="summary">
+          <div class="card">
+            <div class="caption">Spazio che liberi con la selezione attuale</div>
+            <div class="big-number" id="sum-selected">0</div>
+            <div class="caption" id="sum-caption"></div>
+            <div class="storage-bar" id="storage-bar"></div>
+            <div class="legend" id="storage-legend"></div>
+          </div>
+          <div class="card">
+            <div class="caption" style="margin-bottom:10px">Cosa occupa il disco</div>
+            <div class="donut-wrap">
+              <svg class="donut" id="donut" viewBox="0 0 168 168"></svg>
+              <div class="cat-list" id="cat-list"></div>
+            </div>
+          </div>
+        </div>
+        <div id="result-notes"></div>
+
+        <div class="pivot" role="tablist">
+          <button class="active" data-tab="recommended" role="tab">Da pulire</button>
+          <button data-tab="all" role="tab">Tutto il disco</button>
+          <button data-tab="map" role="tab">Mappa del disco</button>
+        </div>
+
+        <div class="toolbar" id="list-toolbar">
+          <div class="search"><input id="search" placeholder="Cerca per nome o percorso" spellcheck="false"><span class="icon">&#xE721;</span></div>
+          <select class="combo" id="filter">
+            <option value="any">Tutti gli elementi</option>
+            <option value="checked">Solo selezionati</option>
+            <option value="unchecked">Solo non selezionati</option>
+            <option value="ai">Consigliati dall'AI</option>
+          </select>
+          <span class="spacer"></span>
+          <button class="btn subtle" id="btn-expand"><span class="icon">&#xE70D;</span>Espandi tutto</button>
+          <button class="btn subtle" id="btn-select-reco"><span class="icon">&#xE8FB;</span>Ripristina consigli</button>
+          <button class="btn subtle" id="btn-select-none"><span class="icon">&#xE894;</span>Deseleziona tutto</button>
+        </div>
+
+        <div id="tab-list"></div>
+        <div id="tab-map" style="display:none">
+          <div class="map-wrap">
+            <div class="treemap" id="treemap"></div>
+            <div class="card detail" id="map-detail"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. deleting / done -->
+      <section class="screen" id="screen-clean">
+        <div class="card analysis-main" id="clean-running">
+          <svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26"/></svg>
+          <div style="flex:1;min-width:0">
+            <h2 id="cl-title">Pulizia in corso</h2>
+            <div class="muted" id="cl-sub"></div>
+            <div class="progress" style="margin-top:14px"><span id="cl-bar" style="width:0"></span></div>
+            <div class="current-path" id="cl-path" style="margin-top:8px"></div>
+          </div>
+        </div>
+        <div id="clean-done" style="display:none">
+          <div class="card done-hero">
+            <div class="done-badge"><span class="icon">&#xE73E;</span></div>
+            <div style="flex:1;min-width:0">
+              <h2 id="dn-title"></h2>
+              <div class="muted" id="dn-sub" style="color:var(--text-2)"></div>
+              <div id="dn-drive" style="margin-top:14px;max-width:460px"></div>
+            </div>
+          </div>
+          <div id="dn-errors"></div>
+          <div class="actions">
+            <button class="btn accent large" id="btn-again"><span class="icon">&#xE72C;</span>Nuova analisi</button>
+            <button class="btn large" id="btn-log"><span class="icon">&#xE838;</span>Apri i registri</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="commandbar" id="commandbar">
+  <div class="sel">
+    <div class="v" id="cb-size">0 GB</div>
+    <div class="s" id="cb-sub">Nessun elemento selezionato</div>
+  </div>
+  <div class="segmented" id="mode" role="radiogroup" aria-label="Modalità di eliminazione">
+    <button class="active" data-mode="trash" role="radio" aria-checked="true"><span class="icon">&#xE74D;</span>Sposta nel Cestino</button>
+    <button data-mode="permanent" role="radio" aria-checked="false"><span class="icon">&#xE7BA;</span>Elimina definitivamente</button>
+  </div>
+  <button class="btn accent large" id="btn-clean" disabled><span class="icon">&#xE74D;</span>Pulisci…</button>
+</div>
+
+<div class="smoke" id="dialog"><div class="dialog" role="dialog" aria-modal="true" id="dialog-box"></div></div>
+<div class="tooltip" id="tooltip"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

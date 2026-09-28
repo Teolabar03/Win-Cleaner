@@ -1,0 +1,36 @@
+[project]
+name = "win-cleaner"
+version = "0.1.0"
+description = "Pulizia del disco guidata: mappa il disco, classifica con Rizzo Flow, elimina solo cio' che scegli"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "rizzo-flow",
+  "pywebview>=5.3",
+  "send2trash>=1.8",
+  "pywin32>=306",
+]
+
+[dependency-groups]
+dev = ["pyinstaller>=6.10", "pytest>=8"]
+
+[tool.uv.sources]
+# Pinned: the llama.cpp runtime (b11081) and the base Spark-X2.5-4B GGUF the app was tested with.
+# Later commits switch to fine-tuned weights by default.
+rizzo-flow = { git = "https://github.com/Rizzo-AI-Academy/rizzo-flow", rev = "d34665b7a28c62b79f37939f2fd83f5fe659fbf9" }
+
+[project.scripts]
+cleaner = "cleaner.app:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cleaner"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/cleaner/ui" = "cleaner/ui"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
